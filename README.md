@@ -1,6 +1,6 @@
 # Morphvocab_lexiloop
 🎯 A local-first vocabulary trainer with morpheme-chunk spelling, bidirectional mixed quizzes (EN↔CN) and shape-coded definitions — spaced repetition with a real-time pace/ETA dashboard. 零云依赖，本地运行。
-# 智能背单词 · 看图背单词（Vocab Quiz）
+# 智能背单词 （Vocab Quiz）
 
 一个本地运行的雅思单词学习系统：间隔重复（SRS）调度 + 8 种题型（含双向「组合拼写·混合」）+ 预生成 MP3 语音 + 实时战情仪表（正确率 / 配速 / 预计完成时间）+ GSAP 微动效。纯本地服务，零云依赖，进度存于服务端唯一账本。
 
