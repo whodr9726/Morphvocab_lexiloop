@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>单词 & 短语 · 雅思闯关</title>
+<link rel="stylesheet" href="style.css?v=46">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════顶部导航 ═══════════-->
+  <header class="topbar">
+    <div class="tabs">
+      <button class="tab active" id="tabWords" data-part="words">🔤 单词 · 雅思</button>
+      <button class="tab" id="tabPhrases" data-part="phrases">💬 生活短语</button>
+      <button class="tab" id="tabPreps" data-part="preps">📐 介词规则</button>
+    </div>
+    <button class="icon-btn" id="btnSettings" title="设置">⚙️</button>
+  </header>
+
+  <!-- ═══════════首页 ═══════════-->
+  <main id="homeView" class="view">
+    <!-- AI 安排提示 -->
+    <div id="planBanner" class="banner hidden"></div>
+
+    <!-- 今日任务卡片 -->
+    <section class="card plan-card">
+      <div class="plan-head">
+        <h2 id="planTitle">今日任务</h2>
+        <span class="date" id="todayDate"></span>
+      </div>
+      <div class="plan-nums">
+        <div class="num-item">
+          <span class="num" id="numReview">0</span>
+          <span class="lbl">待复习</span>
+          <span class="cap" id="capReview"></span>
+        </div>
+        <div class="num-item">
+          <span class="num" id="numNew">0</span>
+          <span class="lbl">待新学</span>
+          <span class="cap" id="capNew"></span>
+        </div>
+        <div class="num-item">
+          <span class="num" id="numStreak">0</span>
+          <span class="lbl">连续打卡</span>
+          <span class="cap">天</span>
+        </div>
+      </div>
+
+      <!-- 万词王式双入口-->
+      <div class="mode-cards">
+        <button class="mode-card new" id="btnStartNew">
+          <span class="mc-icon">🆕</span>
+          <span class="mc-title">新学模式</span>
+          <span class="mc-sub" id="subNew">今日 200 词</span>
+        </button>
+        <button class="mode-card rev" id="btnStartReview">
+          <span class="mc-icon">🔁</span>
+          <span class="mc-title">每日复习</span>
+          <span class="mc-sub" id="subReview">今日 0 词</span>
+        </button>
+      </div>
+
+      <!-- 测验题型（新学小测/ 每日复习 / 错题重做 通用用-->
+      <div class="cons-row">
+        <span class="cons-lbl">题型</span>
+        <div class="chip-row" id="modeRow">
+          <button class="cchip active" data-mode="e2c">👀 看词选义</button>
+          <button class="cchip" data-mode="listen">👂 听音辨义</button>
+          <button class="cchip" data-mode="c2e">🎧 听中文选词</button>
+          <button class="cchip" data-mode="spell">✍️ 拼写默写</button>
+          <button class="cchip" data-mode="spellc">🎧 听中文写词</button>
+          <button class="cchip" data-mode="chunk">🧩 组合拼写</button>
+          <button class="cchip" data-mode="chunkMix">🔀 组合拼写·混合</button>
+          <button class="cchip" data-mode="zhChunk">🧠 意象组合</button>
+          <button class="cchip" data-mode="mix">🎲 组合</button>
+        </div>
+      </div>
+      <button class="btn-ghost wide" id="btnWordList">📖 词书列表 · 查看每个词的掌握状态</button>
+      <p class="plan-tip" id="planTip"></p>
+    </section>
+
+    <!-- 巩固练习（每日任务外的额外加练） -->
+    <section class="card cons-card">
+      <h3>🎯 巩固练习 · 每日任务外的自由加练</h3>
+      <div class="cons-row">
+        <span class="cons-lbl">范围</span>
+        <div class="chip-row" id="consPoolRow">
+          <button class="cchip" data-v="todayNew" data-label="今日新学">今日新学</button>
+          <button class="cchip" data-v="todayRev" data-label="今日复习">今日复习</button>
+          <button class="cchip" data-v="wrong" data-label="错词">错词</button>
+          <button class="cchip" data-v="prep" data-label="介词规则">介词规则</button>
+          <button class="cchip" data-v="all" data-label="全部已学">全部已学</button>
+        </div>
+      </div>
+      <div class="cons-row">
+        <span class="cons-lbl">题型</span>
+        <div class="chip-row" id="consQRow">
+          <button class="cchip" data-v="e2c" data-label="看词选义">看词选义</button>
+          <button class="cchip" data-v="listen" data-label="听音辨义">听音辨义</button>
+          <button class="cchip" data-v="c2e" data-label="听中文选词">听中文选词</button>
+          <button class="cchip" data-v="spell" data-label="拼写默写">拼写默写</button>
+          <button class="cchip" data-v="spellc" data-label="听中文写词">听中文写词</button>
+          <button class="cchip" data-v="chunk" data-label="组合拼写">组合拼写</button>
+          <button class="cchip" data-v="chunkMix" data-label="组合拼写·混合">组合拼写·混合</button>
+          <button class="cchip" data-v="zhChunk" data-label="意象组合">意象组合</button>
+          <button class="cchip" data-v="mix" data-label="组合">组合</button>
+        </div>
+      </div>
+      <div class="cons-row">
+        <span class="cons-lbl">每组</span>
+        <div class="chip-row" id="consSizeRow">
+          <button class="cchip" data-v="10" data-label="10">10</button>
+          <button class="cchip" data-v="15" data-label="15">15</button>
+          <button class="cchip" data-v="20" data-label="20">20</button>
+          <button class="cchip" data-v="25" data-label="25">25</button>
+          <button class="cchip" data-v="30" data-label="30">30</button>
+          <button class="cchip" data-v="50" data-label="50">50</button>
+          <button class="cchip" data-v="100" data-label="100">100</button>
+          <button class="cchip" data-v="150" data-label="150">150</button>
+          <button class="cchip" data-v="200" data-label="200">200</button>
+        </div>
+      </div>
+      <div class="cons-progress hidden" id="consProgress">
+        <div class="cons-progress-txt"><span id="consProgText">今日巩固 0/0</span><span id="consProgLeft"></span></div>
+        <div class="cons-bar"><div class="cons-bar-fill" id="consProgFill"></div></div>
+      </div>
+      <button class="btn-primary big" id="btnConsStart">开始巩固</button>
+    </section>
+
+    <!-- 词库进度 -->
+    <section class="card">
+      <h3>词库进度</h3>
+      <div class="prog-line">
+        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+        <span class="prog-text" id="progText"></span>
+      </div>
+      <div class="mini-stats" id="miniStats"></div>
+    </section>
+
+    <!-- 统计-->
+    <section class="card">
+      <h3>📊7 天记录</h3>
+      <div id="weekList" class="week-list"></div>
+    </section>
+
+    <p class="footer-tip">建议使用 Edge / Chrome 打开本页面，发音效果更自然。全程不占用 GPU / CUDA。<span id="verTag"></span></p>
+  </main>
+
+  <!-- ═══════════答题区═══════════-->
+  <main id="sessionView" class="view hidden">
+    <div class="session-top">
+      <button class="icon-btn" id="btnQuit" title="结束本次学习">✕</button>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="sessionFill"></div></div>
+        <span class="progress-num" id="sessionPos">0/0</span>
+      </div>
+      <div class="session-chips">
+        <span class="chip chip-new" id="chipNew">新0</span>
+        <span class="chip chip-rev" id="chipRev">复0</span>
+        <span class="chip chip-acc" id="chipAcc">正确 —</span>
+        <span class="chip chip-pace" id="chipPace">速度 —</span>
+        <span class="chip chip-eta" id="chipEta">预计 —</span>
+      </div>
+    </div>
+
+    <section class="card q-card">
+      <div class="q-kind-row">
+        <span class="q-kind" id="qKind">看词选义</span>
+        <span id="qStatus" class="status-badge hidden"></span>
+      </div>
+
+      <!-- 新学模式：学习卡 -->
+      <div id="teachArea" class="teach-area hidden">
+        <div class="teach-word" id="teachWord">word</div>
+        <button class="speak-btn" id="btnTeachSpeak">🔊</button>
+        <div class="teach-meaning" id="teachMeaning"></div>
+        <button class="btn-primary big" id="btnTaught">下一张→</button>
+      </div>
+
+      <!-- 题干（答题阶段） -->
+      <div id="qPromptArea" class="q-prompt">
+        <div class="q-word" id="qWord">word</div>
+        <button class="speak-btn" id="btnReplay" title="再听一遍">🔊</button>
+        <button class="btn-ghost" id="btnHint" style="display:none">💡 提示</button>
+      </div>
+
+      <!-- 选择区（看词选义 / 听音辨义 / 看义选词 均为四选一。-->
+      <div id="choiceArea" class="choice-area hidden"></div>
+
+      <!-- 听音辨义：先想好意思，再手动出选项 -->
+      <div id="listenMask" class="hidden">
+        <button class="btn-primary big" id="btnReveal">🤔 已知晓意思· 出示选项</button>
+      </div>
+
+      <!-- 拼写默写：输入区 -->
+      <div id="spellArea" class="hidden">
+        <div class="input-row">
+          <input type="text" id="spellInput" class="answer-input"
+                 placeholder="写出英文（可听发音）" autocomplete="off" enterkeyhint="send">
+        </div>
+        <div class="listen-btns">
+          <button class="btn-ghost" id="btnSpellGiveup">看答案😵</button>
+          <button class="btn-primary" id="btnSpellSubmit">提交 ⏎</button>
+        </div>
+      </div>
+
+      <!-- 听音模式专用：实在听不出。-->
+      <div id="giveupRow" class="hidden">
+        <button class="btn-ghost wide" id="btnGiveup2">听不出来，看答案 😵</button>
+      </div>
+
+      <!-- 批改结果 -->
+      <div id="feedback" class="feedback hidden">
+        <div class="fb-head" id="fbHead"></div>
+        <div class="fb-body" id="fbBody"></div>
+      </div>
+
+      <div class="next-row hidden" id="nextRow">
+        <button class="btn-primary big" id="btnNext">下一题→</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════结算区═══════════-->
+  <main id="doneView" class="view hidden">
+    <section class="card done-card">
+      <div class="done-emoji" id="doneEmoji">🎉</div>
+      <h2 id="doneTitle">本次学习完成！</h2>
+      <div class="done-grid">
+        <div class="done-item"><span class="num" id="doneNew">0</span><span class="lbl">新学</span></div>
+        <div class="done-item"><span class="num" id="doneRev">0</span><span class="lbl">复习</span></div>
+        <div class="done-item"><span class="num" id="doneAcc">0%</span><span class="lbl">正确率</span></div>
+      </div>
+      <button class="btn-ghost big hidden" id="btnNextGroup">继续下一组</button>
+      <button class="btn-primary big" id="btnBackHome">返回首页</button>
+    </section>
+  </main>
+
+  <!-- ═══════════词书列表页═══════════-->
+  <main id="listView" class="view hidden">
+    <div class="session-top">
+      <button class="icon-btn" id="btnCloseList" title="返回">✕</button>
+      <h2 class="list-title" id="listTitle">词书列表</h2>
+    </div>
+    <div class="filter-row" id="filterRow">
+      <button class="filter-chip active" data-f="all" data-label="全部">全部</button>
+      <button class="filter-chip" data-f="bad" data-label="🔴 频繁出错">🔴 频繁出错</button>
+      <button class="filter-chip" data-f="over" data-label="🟠 复习逾期">🟠 复习逾期</button>
+      <button class="filter-chip" data-f="done" data-label="🟢 已掌握">🟢 已掌握</button>
+      <button class="filter-chip" data-f="mid" data-label="🔵 初步掌握">🔵 初步掌握</button>
+      <button class="filter-chip" data-f="learning" data-label="🔵 学习中">🔵学习中</button>
+      <button class="filter-chip" data-f="new" data-label="未学">未学</button>
+    </div>
+    <button class="btn-primary big hidden" id="btnPractice">🎯 加练</button>
+    <section class="card list-card">
+      <div id="wordList" class="word-list"></div>
+      <button class="btn-ghost wide hidden" id="btnMore">加载更多</button>
+      <p class="list-empty hidden" id="listEmpty">这个筛选下没有词</p>
+    </section>
+  </main>
+
+  <!-- ═══════════巩固重学确认弹窗 ═══════════-->
+  <div id="consConfirm" class="modal hidden">
+    <div class="modal-mask" id="consMask"></div>
+    <div class="modal-body" style="max-width:420px;border-radius:20px;margin:auto 0;">
+      <h3 style="margin-bottom:10px">🔁 本轮已完成</h3>
+      <p style="font-size:14px;color:var(--ink2);line-height:1.7" id="consConfirmText"></p>
+      <div class="row-btns" style="margin-top:16px">
+        <button class="btn-ghost" id="consCancel">取消</button>
+        <button class="btn-primary" id="consRestart" style="flex:1">重新学一遍</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════设置弹窗 ═══════════-->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-mask"></div>
+    <div class="modal-body">
+      <div class="modal-head">
+        <h3>⚙️ 设置</h3>
+        <button class="icon-btn" id="btnCloseSettings">✕</button>
+      </div>
+
+      <div class="set-group">
+        <label>每日新学单词 <input type="number" id="setNewWords" min="10" max="1000" step="10"></label>
+        <label>单词每日复习上限 <input type="number" id="setRevWords" min="50" max="2000" step="50"></label>
+        <label>每日新学短语 <input type="number" id="setNewPhrases" min="5" max="300" step="5"></label>
+        <label>短语每日复习上限 <input type="number" id="setRevPhrases" min="20" max="1000" step="20"></label>
+        <label>介词每日新学 <input type="number" id="setNewPreps" min="1" max="10" step="1"> <small>默认 2</small></label>
+        <label>介词每日复习上限 <input type="number" id="setRevPreps" min="2" max="20" step="1"> <small>默认 5</small></label>
+        <label>答对后自动翻页<input type="number" id="setOkSec" min="0.3" max="10" step="0.1"> 秒</label>
+        <label class="chk"><input type="checkbox" id="setTeachBlind"> 意象组合隐藏英文（纯听音选意象）</label>
+        <label class="chk"><input type="checkbox" id="setZhFirst"> 朗读精简：只读前 N 个义项（不勾 = 读全部义项）</label>
+        <label class="chk">朗读义项数 N <input type="number" id="setSenseN" min="1" max="10" step="1" style="width:64px;margin-left:8px"> 每词只读频率最高的前N 个义项</label>
+        <label class="chk"><input type="checkbox" id="setZhPos"> 朗读词性（关闭后只读义项，凭释义形态辨词性）</label>
+        <label class="chk"><input type="checkbox" id="setZhBlind"> 听中文题型隐藏汉字（纯听音训练）</label>
+        <label class="chk"><input type="checkbox" id="setChunkHint"> 组合拼写常显中文提示（这题不遮汉字）</label>
+        <label class="chk"><input type="checkbox" id="setPauseNew"> 暂停新词推进（复习清零后不自动划入下一批新词）</label>
+        <label>答错/看答案后展示时长 <input type="number" id="setWrongSec" min="0.5" max="10" step="0.5"> 秒</label>
+      </div>
+
+      <div class="set-group">
+        <label>🔊 语音朗读（开关）</label>
+        <label class="chk"><input type="checkbox" id="setAutoSpeak"> 自动播放发音（关闭后完全无声、零资源占用。</label>
+        <label>发音语速<span id="rateVal">0.9</span></label>
+        <input type="range" id="setRate" min="0.5" max="1.4" step="0.1">
+        <label>发音声音</label>
+        <select id="setVoice"></select>
+        <button class="btn-ghost" id="btnTestVoice">🔊 试听发音</button>
+        <p class="set-note">本页面不会调用本机CUDA / GPU：发音是浏览器内置功能，关闭开关后不产生任何语音开销；也没有语音识别在后台运行。</p>
+      </div>
+
+      <div class="set-group">
+        <label>学习进度备份</label>
+        <div class="row-btns">
+          <button class="btn-ghost" id="btnExport">导出进度</button>
+          <button class="btn-ghost" id="btnImport">导入进度</button>
+          <input type="file" id="importFile" accept=".json" class="hidden">
+        </div>
+        <button class="btn-danger" id="btnReset">重置全部进度</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+
+<script src="data/ielts.js?v=71"></script>
+<script src="data/phrases.js?v=40"></script>
+<script src="data/prepositions.js?v=40"></script>
+<script src="data/audio_index.js?v=57"></script>
+<script src="data/zh_override.js?v=45"></script>
+<script src="data/vp_map.js?v=52"></script>
+<script src="data/chunk_map.js?v=60"></script>
+<script src="lib/gsap.min.js?v=1"></script>
+<script src="app.js?v=73"></script>
+</body>
+</html>
